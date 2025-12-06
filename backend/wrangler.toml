@@ -1,0 +1,6 @@
+name = "atomstudy-backend"
+main = "src/index.js"
+compatibility_date = "2023-12-01"
+
+[vars]
+# OPENAI_API_KEY will be set via secret
