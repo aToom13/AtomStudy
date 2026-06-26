@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtomStudy Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="logo-icon">⚛️</div>
+                <h1>AtomStudy</h1>
+                <p>Admin Dashboard</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>API Key</label>
+                    <input type="password" id="apiKey" placeholder="Firebase API Key" required>
+                </div>
+                <div class="form-group">
+                    <label>Admin Token</label>
+                    <input type="password" id="adminToken" placeholder="Admin Secret Token" required>
+                </div>
+                <button type="submit" class="btn-primary">Giriş Yap</button>
+            </form>
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">⚛️</span>
+                    <span class="logo-text">AtomStudy</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" data-page="overview">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Genel Bakış</span>
+                </a>
+                <a href="#users" class="nav-item" data-page="users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Kullanıcılar</span>
+                </a>
+                <a href="#questions" class="nav-item" data-page="questions">
+                    <span class="nav-icon">❓</span>
+                    <span class="nav-text">Sorular</span>
+                </a>
+                <a href="#models" class="nav-item" data-page="models">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">AI Modelleri</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-page="analytics">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Analitik</span>
+                </a>
+                <a href="#settings" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Ayarlar</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="refreshBtn" class="btn-icon" title="Yenile">
+                    <span>🔄</span>
+                </button>
+                <button id="logoutBtn" class="btn-icon" title="Çıkış">
+                    <span>🚪</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h2 id="pageTitle">Genel Bakış</h2>
+                <div class="header-actions">
+                    <div class="auto-refresh">
+                        <label class="switch">
+                            <input type="checkbox" id="autoRefresh" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Canlı Güncelleme</span>
+                    </div>
+                    <div class="last-update">
+                        Son güncelleme: <span id="lastUpdate">-</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Overview Page -->
+            <div id="page-overview" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>Toplam Kullanıcı</h3>
+                            <p class="stat-value" id="statTotalUsers">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <h3>Aktif Kullanıcı (7g)</h3>
+                            <p class="stat-value" id="statActiveUsers">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💎</div>
+                        <div class="stat-info">
+                            <h3>Premium Kullanıcı</h3>
+                            <p class="stat-value" id="statPremiumUsers">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❓</div>
+                        <div class="stat-info">
+                            <h3>Toplam Soru</h3>
+                            <p class="stat-value" id="statTotalQuestions">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3>Başarı Oranı</h3>
+                            <p class="stat-value" id="statSuccessRate">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3>Toplam Maliyet</h3>
+                            <p class="stat-value" id="statTotalCost">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <h3>Ort. Yanıt Süresi</h3>
+                            <p class="stat-value" id="statAvgTime">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3>Bugünkü Sorular</h3>
+                            <p class="stat-value" id="statTodayQuestions">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <div class="section">
+                        <h3>Son Sorular</h3>
+                        <div class="table-container">
+                            <table class="data-table" id="recentQuestionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kullanıcı</th>
+                                        <th>Ders</th>
+                                        <th>Konu</th>
+                                        <th>Model</th>
+                                        <th>Durum</th>
+                                        <th>Süre</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="page-users" class="page">
+                <div class="page-toolbar">
+                    <div class="search-box">
+                        <input type="text" id="userSearch" placeholder="Kullanıcı ara...">
+                        <button id="searchBtn">🔍</button>
+                    </div>
+                    <button class="btn-primary" onclick="dashboard.openCreateUserModal()">
+                        ➕ Yeni Kullanıcı Ekle
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>İsim</th>
+                                <th>Email</th>
+                                <th>Abonelik</th>
+                                <th>Soru Sayısı</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="usersPagination"></div>
+            </div>
+
+            <!-- Questions Page -->
+            <div id="page-questions" class="page">
+                <div class="page-toolbar">
+                    <div class="filters">
+                        <select id="filterSubject">
+                            <option value="all">Tüm Dersler</option>
+                            <option value="Matematik">Matematik</option>
+                            <option value="Fizik">Fizik</option>
+                            <option value="Kimya">Kimya</option>
+                            <option value="Biyoloji">Biyoloji</option>
+                        </select>
+                        <select id="filterStatus">
+                            <option value="all">Tüm Durumlar</option>
+                            <option value="success">Başarılı</option>
+                            <option value="error">Hata</option>
+                        </select>
+                        <select id="filterModel">
+                            <option value="all">Tüm Modeller</option>
+                            <option value="gemini-3-pro-preview">Gemini 3 Pro</option>
+                            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="questionsTable">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Ders</th>
+                                <th>Konu</th>
+                                <th>Model</th>
+                                <th>Durum</th>
+                                <th>Maliyet</th>
+                                <th>Süre</th>
+                                <th>Tarih</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="questionsPagination"></div>
+            </div>
+
+            <!-- Models Page -->
+            <div id="page-models" class="page">
+                <div class="models-grid" id="modelsGrid">
+                    <!-- Models will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="page-analytics" class="page">
+                <div class="analytics-filters">
+                    <select id="analyticsPeriod">
+                        <option value="7">Son 7 Gün</option>
+                        <option value="30" selected>Son 30 Gün</option>
+                        <option value="90">Son 90 Gün</option>
+                    </select>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Günlük Soru Sayısı</h3>
+                        <canvas id="questionsChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Model Kullanımı</h3>
+                        <canvas id="modelsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="page-settings" class="page">
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>🔑 API Durumu</h3>
+                        <div class="settings-form" id="apiStatusForm">
+                            <div class="api-status-list">
+                                <div class="api-status-item">
+                                    <div class="api-info">
+                                        <span class="api-name">🤖 Gemini API</span>
+                                        <span class="api-badge success" id="geminiKeyStatus">✅ Aktif</span>
+                                    </div>
+                                    <small>Google AI Studio API Key</small>
+                                </div>
+                                <div class="api-status-item">
+                                    <div class="api-info">
+                                        <span class="api-name">🔥 Firebase</span>
+                                        <span class="api-badge success" id="firebaseKeyStatus">✅ Aktif</span>
+                                    </div>
+                                    <small>Firebase Admin SDK</small>
+                                </div>
+                                <div class="api-status-item">
+                                    <div class="api-info">
+                                        <span class="api-name">📺 YouTube API</span>
+                                        <span class="api-badge" id="youtubeKeyStatus">⚪ Bilinmiyor</span>
+                                    </div>
+                                    <small>YouTube Data API (Opsiyonel)</small>
+                                </div>
+                            </div>
+                            <div class="api-note">
+                                <p>💡 API key'ler Cloudflare Workers ortam değişkenleri olarak saklanır.</p>
+                                <p>Değişiklik yapmak için: <code>wrangler secret put KEY_ADI</code></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>🤖 Genel Model Ayarları</h3>
+                        <div class="settings-form" id="modelSettingsForm">
+                            <div class="form-group">
+                                <label>Varsayılan Model</label>
+                                <input type="text" id="defaultModel" placeholder="gemini-2.5-pro" value="gemini-2.5-pro">
+                                <small>Örn: gemini-2.5-pro, gemini-3-pro-preview, gemini-2.5-flash</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Max Tokens</label>
+                                <input type="number" id="maxTokens" value="4096" min="100" max="8192">
+                            </div>
+                            <div class="form-group">
+                                <label>Temperature</label>
+                                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.3">
+                                <span id="temperatureValue">0.3</span>
+                            </div>
+                            <button class="btn-primary" onclick="dashboard.saveModelSettings()">💾 Kaydet</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card wide">
+                        <h3>📚 Ders Bazlı Model Atamaları</h3>
+                        <p class="settings-desc">Her ders için normal ve şekilli (görsel) sorular için farklı model atayabilirsiniz.</p>
+                        <div class="subject-models-grid" id="subjectModelsGrid">
+                            <!-- Subject models will be loaded here -->
+                        </div>
+                        <button class="btn-primary" onclick="dashboard.saveSubjectModels()" style="margin-top: 20px;">💾 Ders Model Ayarlarını Kaydet</button>
+                    </div>
+
+                    <div class="settings-card wide">
+                        <h3>⚡ İşlem Bazlı Model Atamaları</h3>
+                        <p class="settings-desc">Farklı işlem türleri için kullanılacak modeller.</p>
+                        <div class="action-models-grid" id="actionModelsGrid">
+                            <!-- Action models will be loaded here -->
+                        </div>
+                        <button class="btn-primary" onclick="dashboard.saveActionModels()" style="margin-top: 20px;">💾 İşlem Model Ayarlarını Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Kullanıcı Detayı</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="userModalBody">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Yeni Kullanıcı Ekle</h3>
+                <button class="modal-close" onclick="dashboard.closeModal('createUserModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createUserForm" class="user-form" onsubmit="event.preventDefault(); dashboard.createUser(new FormData(this));">
+                    <div class="form-section">
+                        <h4>👤 Profil Bilgileri</h4>
+                        <div class="form-group">
+                            <label>İsim *</label>
+                            <input type="text" name="name" id="newUserName" required placeholder="Ahmet Yılmaz">
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" id="newUserEmail" required placeholder="ahmet@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="tel" name="phone" id="newUserPhone" placeholder="+90 555 123 4567">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>🎓 Eğitim Bilgileri</h4>
+                        <div class="form-group">
+                            <label>Eğitim Seviyesi</label>
+                            <select name="education" id="newUserEducation">
+                                <option value="">Seçiniz</option>
+                                <option value="Ortaokul">Ortaokul</option>
+                                <option value="Lise">Lise</option>
+                                <option value="Üniversite">Üniversite</option>
+                                <option value="Yüksek Lisans">Yüksek Lisans</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sınıf/Yıl</label>
+                            <input type="text" name="grade" id="newUserGrade" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Bölüm/Alan</label>
+                            <input type="text" name="department" id="newUserDepartment" placeholder="Yazılım Mühendisliği">
+                        </div>
+                        <div class="form-group">
+                            <label>Okul/Üniversite</label>
+                            <input type="text" name="school" id="newUserSchool" placeholder="İstanbul Teknik Üniversitesi">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>💳 Abonelik</h4>
+                        <div class="form-group">
+                            <label>Plan</label>
+                            <select name="plan" id="newUserPlan">
+                                <option value="Başlangıç">🆓 Başlangıç (3 kredi/gün)</option>
+                                <option value="Temel">📗 Temel (5 kredi/gün)</option>
+                                <option value="Standart">📘 Standart (10 kredi/gün)</option>
+                                <option value="Premium">💎 Premium (30 kredi/gün)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rol</label>
+                            <select name="role" id="newUserRole">
+                                <option value="user">Kullanıcı</option>
+                                <option value="builder">Builder</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="dashboard.closeModal('createUserModal')">İptal</button>
+                        <button type="submit" class="btn-primary">💾 Kullanıcı Oluştur</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Kullanıcı Düzenle</h3>
+                <button class="modal-close" onclick="dashboard.closeModal('editUserModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm" class="user-form" onsubmit="event.preventDefault(); dashboard.updateUser(new FormData(this));">
+                    <input type="hidden" name="id" id="editUserId">
+                    <div class="form-section">
+                        <h4>👤 Profil Bilgileri</h4>
+                        <div class="form-group">
+                            <label>İsim</label>
+                            <input type="text" name="name" id="editUserName" placeholder="Ahmet Yılmaz">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" id="editUserEmail" placeholder="ahmet@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="tel" name="phone" id="editUserPhone" placeholder="+90 555 123 4567">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>🎓 Eğitim Bilgileri</h4>
+                        <div class="form-group">
+                            <label>Eğitim Seviyesi</label>
+                            <select name="education" id="editUserEducation">
+                                <option value="">Seçiniz</option>
+                                <option value="Ortaokul">Ortaokul</option>
+                                <option value="Lise">Lise</option>
+                                <option value="Üniversite">Üniversite</option>
+                                <option value="Yüksek Lisans">Yüksek Lisans</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sınıf/Yıl</label>
+                            <input type="text" name="grade" id="editUserGrade" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Bölüm/Alan</label>
+                            <input type="text" name="department" id="editUserDepartment" placeholder="Yazılım Mühendisliği">
+                        </div>
+                        <div class="form-group">
+                            <label>Okul/Üniversite</label>
+                            <input type="text" name="school" id="editUserSchool" placeholder="İstanbul Teknik Üniversitesi">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>💳 Abonelik</h4>
+                        <div class="form-group">
+                            <label>Plan</label>
+                            <select name="plan" id="editUserPlan">
+                                <option value="Başlangıç">🆓 Başlangıç (3 kredi/gün)</option>
+                                <option value="Temel">📗 Temel (5 kredi/gün)</option>
+                                <option value="Standart">📘 Standart (10 kredi/gün)</option>
+                                <option value="Premium">💎 Premium (30 kredi/gün)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rol</label>
+                            <select name="role" id="editUserRole">
+                                <option value="user">Kullanıcı</option>
+                                <option value="builder">Builder</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="dashboard.closeModal('editUserModal')">İptal</button>
+                        <button type="submit" class="btn-primary">💾 Değişiklikleri Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>⚠️ Kullanıcı Sil</h3>
+                <button class="modal-close" onclick="dashboard.closeModal('deleteConfirmModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-warning">Bu kullanıcıyı silmek istediğinize emin misiniz?</p>
+                <p class="delete-user-info" id="deleteUserInfo"></p>
+                <p class="delete-hint">Bu işlem geri alınamaz!</p>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="dashboard.closeModal('deleteConfirmModal')">İptal</button>
+                    <button type="button" class="btn-danger" id="confirmDeleteBtn">🗑️ Sil</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Detail Modal -->
+    <div id="questionModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Soru Detayı</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="questionModalBody">
+                <!-- Question details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+# ============================================
+# AtomStudy — .gitignore
+# Open Source Ready
+# ============================================
+
+# --- SECRETS & CREDENTIALS ---
+# Firebase Admin SDK private key
+atomstudy-2543-firebase-adminsdk-fbsvc-4c4657a045.json
+# Firebase mobile config (contains API keys)
+mobile/android/app/google-services.json
+mobile/ios/Runner/GoogleService-Info.plist
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+backend/.dev.vars
+
+# --- DEPENDENCIES ---
+node_modules/
+backend/node_modules/
+
+# --- BUILD OUTPUTS ---
+build/
+dist/
+.next/
+.mobile/build/
+**/build/
+
+# --- CLOUDFLARE ---
+backend/.wrangler/
+worker/.wrangler/
+
+# --- IDE ---
+.vscode/
+.idea/
+.atomcli/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- PERSONAL & INTERNAL DOCS ---
+Fikirler.txt
+User.md
+Backend.md
+ADMIN_PANEL_GUIDE.md
+QUICK_START.md
+AtomStudy.jpg
+
+# --- SCREENSHOTS ---
+.screenshots/
+
+# --- RUNTIME ---
+*.log

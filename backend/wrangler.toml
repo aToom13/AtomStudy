@@ -1,6 +1,22 @@
 name = "atomstudy-backend"
 main = "src/index.js"
-compatibility_date = "2023-12-01"
+compatibility_date = "2024-01-01"
+node_compat = true
 
-[vars]
-# OPENAI_API_KEY will be set via secret
+# ==========================================
+# SECURITY NOTICE
+# ==========================================
+# Never put secrets (API keys, tokens) in this file.
+# Local dev: Create .dev.vars in this directory
+#            (see .env.example for required vars)
+# Production: Use `wrangler secret put <KEY>`
+# ==========================================
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "atomstudy-db"
+database_id = "2492e963-16d3-4abe-b38f-e5f2cedd84ab"
+
+[observability]
+enabled = true

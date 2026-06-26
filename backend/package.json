@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^3.114.15"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
 }
