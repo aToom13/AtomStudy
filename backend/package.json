@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "wrangler": "^3.114.15"
+    "wrangler": "^4.131.0"
   },
   "dependencies": {
     "firebase-admin": "^13.6.0"
